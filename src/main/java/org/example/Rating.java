@@ -3,6 +3,7 @@ package org.example;
 public class Rating {
 
 	String username;
-	Integer rating;
+	Integer grade;
 	String comment;
+
 }

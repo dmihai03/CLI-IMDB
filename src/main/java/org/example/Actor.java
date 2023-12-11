@@ -5,10 +5,10 @@ import java.util.*;
 public class Actor {
 
 	String biography;
-	List<MoviePair> performances;
+	List<ProductionPair> performances;
 }
 
-class MoviePair {
+class ProductionPair {
 	String name;
 	String type;
 }

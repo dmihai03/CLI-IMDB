@@ -31,8 +31,7 @@ class Regular extends User implements RequestsManager {
 
 	@Override
 	public void createRequest(Request r) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'createRequest'");
+		
 	}
 
 	@Override
@@ -107,11 +106,11 @@ class Contributor extends Staff implements RequestsManager {
 
 class Admin extends Staff {
 
-	void addUserSystem(User user) {
+	public void addUserSystem(User user) {
 		/* TODO */
 	}
 
-	void deleteUserSystem(User user) {
+	public void deleteUserSystem(User user) {
 		/* TODO */
 	}
 
