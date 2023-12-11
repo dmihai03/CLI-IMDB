@@ -54,7 +54,7 @@ public class IMDB {
 
 					Long releaseYear = (Long)productionObject.get("releaseYear");
 
-					Production newMovie;
+					Movie newMovie;
 
 					if (releaseYear != null) {
 						newMovie = new Movie((String)productionObject.get("duration"),
@@ -111,7 +111,7 @@ public class IMDB {
 					Long releaseYear = (Long)productionObject.get("releaseYear");
 					Long seasonsNr = (Long)productionObject.get("numSeasons");
 
-					Production newSeries;
+					Series newSeries;
 
 					newSeries = new Series(releaseYear.intValue(), seasonsNr.intValue());
 
@@ -156,7 +156,28 @@ public class IMDB {
 
 					JSONObject seasonsObject = (JSONObject)productionObject.get("seasons");
 
-					
+					StringBuffer seasonName = new StringBuffer("Season x");
+
+					for (Integer i = 1; i <= newSeries.seasonsNumber; i++) {
+						seasonName.setCharAt(seasonName.length() - 1, i.toString().charAt(0));
+
+						System.out.println(seasonName + "\n\n\n\n");
+
+						JSONArray episodes = (JSONArray)seasonsObject.get(seasonName.toString());
+
+						List<Episode> episodesOfCurrentSeason = new LinkedList<>();
+
+						for (Object o : episodes) {
+							JSONObject episodeInfo = (JSONObject)o;
+
+							episodesOfCurrentSeason.add(new Episode((String)episodeInfo.get("episodeName"),
+															 (String)episodeInfo.get("duration")));
+						}
+
+						newSeries.addSeason(seasonName.toString(), episodesOfCurrentSeason);
+
+						productions.add(newSeries);
+					}
 				}
 			}
 

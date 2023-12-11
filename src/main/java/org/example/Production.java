@@ -143,7 +143,7 @@ class Episode {
 	}
 
 	public String toString() {
-		return "Title: " + name + ", duration:" + duration;
+		return "Title: " + name + "\n\t\tDuration: " + duration + "\n";
 	}
 
 }
@@ -157,6 +157,7 @@ class Series extends Production {
 	public Series(Integer releaseYear, Integer seasonsNumber) {
 			this.releaseYear = releaseYear;
 			this.seasonsNumber = seasonsNumber;
+			seasons = new TreeMap<>();
 
 			type = "Series";
 		}
@@ -228,6 +229,10 @@ class Series extends Production {
 			}
 		}
 
+	}
+
+	public void addSeason(String season, List<Episode> episodes) {
+		seasons.put(season, episodes);
 	}
 
 }
