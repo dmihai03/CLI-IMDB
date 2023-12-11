@@ -2,12 +2,12 @@ package org.example;
 
 import java.util.*;
 
-enum Genre {
-	ACTION, ADVENTURE, COMEDY, DRAMA, HORROR, SF, FANTASY,
-	ROMANCE, MYSTERY, THRILLER, CRIME, BIOGRAPHY, WAR
-}
-
 public abstract class Production implements Comparable {
+
+	enum Genre {
+		Action, Adventure, Comedy, Drama, Horror, SF, Cooking,
+		Fantasy, Romance, Mystery, Thriller, Crime, Biography, War
+	}
 
 	String title;
 	String type;
@@ -69,29 +69,31 @@ class Movie extends Production {
 	public Movie(String duration, Integer releaseYear) {
 		this.duration = duration;
 		this.releaseYear = releaseYear;
+
+		type = "Movie";
 	}
 
 	@Override
 	public void displayInfo() {
 
 		if (isFieldCompleted(title)) {
-			System.out.print("Title:\n\t" + title);
+			System.out.print("Title:\n\t" + title + "\n");
 		}
 
 		if (isFieldCompleted(duration)) {
-			System.out.print("Duration:\n\t" + duration);
+			System.out.print("Duration:\n\t" + duration + "\n");
 		}
 
 		if (isFieldCompleted(releaseYear)) {
-			System.out.print("Released in:\n\t" + releaseYear);
+			System.out.print("Released in:\n\t" + releaseYear + "\n");
 		}
 
 		if (isFieldCompleted(plot)) {
-			System.out.print("Plot:\n\t" + plot);
+			System.out.print("Plot:\n\t" + plot + "\n");
 		}
 
 		if (isFieldCompleted(avgRating)) {
-			System.out.print("Grade:\n\t" + avgRating);
+			System.out.print("Grade:\n\t" + avgRating + "\n");
 		}
 
 		if (isFieldCompleted(directors)) {
@@ -155,29 +157,31 @@ class Series extends Production {
 	public Series(Integer releaseYear, Integer seasonsNumber) {
 			this.releaseYear = releaseYear;
 			this.seasonsNumber = seasonsNumber;
+
+			type = "Series";
 		}
 
 	@Override
 	public void displayInfo() {
 		
 		if (isFieldCompleted(title)) {
-			System.out.print("Title:\n\t" + title);
+			System.out.print("Title:\n\t" + title + "\n");
 		}
 
 		if (isFieldCompleted(seasonsNumber)) {
-			System.out.print("Seasons number:\n\t" + seasonsNumber);
+			System.out.print("Seasons number:\n\t" + seasonsNumber + "\n");
 		}
 
 		if (isFieldCompleted(releaseYear)) {
-			System.out.print("Released in:\n\t" + releaseYear);
+			System.out.print("Released in:\n\t" + releaseYear + "\n");
 		}
 
 		if (isFieldCompleted(plot)) {
-			System.out.print("Plot:\n\t" + plot);
+			System.out.print("Plot:\n\t" + plot + "\n");
 		}
 
 		if (isFieldCompleted(avgRating)) {
-			System.out.print("Grade:\n\t" + avgRating);
+			System.out.print("Grade:\n\t" + avgRating + "\n");
 		}
 
 		if (isFieldCompleted(seasons)) {
