@@ -58,6 +58,7 @@ public class IMDB {
 					newMovie.title = (String)productionObject.get("title");
 					newMovie.plot = (String)productionObject.get("plot");
 					newMovie.avgRating = (Double)productionObject.get("averageRating");
+
 					
 					
 				}
