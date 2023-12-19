@@ -47,3 +47,4 @@ bin/
 README.md
 .idea
 test
+*.out

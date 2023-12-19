@@ -2,7 +2,7 @@ package org.example;
 
 import java.util.*;
 
-public abstract class Production implements Comparable {
+public abstract class Production implements Comparable<Production> {
 
 	enum Genre {
 		Action, Adventure, Comedy, Drama, Horror, SF, Cooking,
@@ -18,28 +18,25 @@ public abstract class Production implements Comparable {
 	String plot;
 	Double avgRating;
 
-	public Production() {
-		title = new String();
+	public Production(String title, String plot, Double avgRating) {
+		this.title = title;
 		type = new String();
 		directors = new LinkedList<>();
 		actors = new LinkedList<>();
 		genres = new LinkedList<>();
 		ratings = new LinkedList<>();
-		plot = new String();
+		this.plot = plot;
+		this.avgRating = avgRating;
 	}
 
 	@Override
-	public int compareTo(Object object) {
+	public int compareTo(Production production) {
 
-		if (object == null) {
+		if (production == null) {
 			throw new NullPointerException();
 		}
 
-		if (!(object instanceof Production)) {
-			throw new ClassCastException("Cannot compare classes!");
-		}
-
-		return title.compareTo(((Production)object).title);
+		return title.compareTo(production.title);
 	}
 
 	public double calculateAvgRating() {
@@ -55,9 +52,9 @@ public abstract class Production implements Comparable {
 	public abstract void displayInfo();
 
 	/* verifies that a field is completed */
-	public boolean isFieldCompleted(Object object) {
+	public boolean isFieldCompleted(Object o) {
 
-		return object != null;
+		return o != null;
 	}
 }
 
@@ -66,7 +63,9 @@ class Movie extends Production {
 	String duration;
 	Integer releaseYear;
 
-	public Movie(String duration, Integer releaseYear) {
+	public Movie(String title, String plot, Double avgRating, String duration, Integer releaseYear) {
+		super(title, plot, avgRating);
+
 		this.duration = duration;
 		this.releaseYear = releaseYear;
 
@@ -154,7 +153,9 @@ class Series extends Production {
 	Integer seasonsNumber;
 	private Map<String, List<Episode>> seasons;
 
-	public Series(Integer releaseYear, Integer seasonsNumber) {
+	public Series(String title, String plot, Double avgRating, Integer releaseYear, Integer seasonsNumber) {
+			super(title, plot, avgRating);
+
 			this.releaseYear = releaseYear;
 			this.seasonsNumber = seasonsNumber;
 			seasons = new TreeMap<>();

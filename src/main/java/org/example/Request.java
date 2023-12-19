@@ -1,7 +1,6 @@
 package org.example;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 enum RequestType {
 	DELETE_ACCOUNT,
@@ -14,14 +13,28 @@ public class Request {
 
 	private RequestType requestType;
 	private LocalDateTime date;
+	/*
+	name: production title / actor name
+	*/
 	String name;
 	String description;
 	String creatorUsername;
 	String solverUsername;
 
-	static class RequestHolder {
-		List<Request> requests;
-
-		/* TODO  */
+	public LocalDateTime getDate() {
+		return date;
 	}
+
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
+
+	public RequestType getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(RequestType requestType) {
+		this.requestType = requestType;
+	}
+
 }
