@@ -20,7 +20,7 @@ class Credentials {
 	}
 
 	public boolean checkPassword(String password) {
-		return this.password.equals(password);
+		return password.equals(password);
 	}
 }
 
@@ -123,14 +123,19 @@ class UserFactory {
 						(AccountType type, User.Information info, String username,
 						String experience, SortedSet<T> favourites, SortedSet<T> contributions, List<String> notifications) {
 		switch (type) {
+
 			case Regular:
 				return new Regular<T>(info, type, username, experience, favourites, notifications);
+
 			case Contributor:
 				return new Contributor<T>(info, type, username, experience, favourites, contributions, notifications);
+
 			case Admin:
 				return new Admin<T>(info, type, username, experience, favourites, contributions, notifications);
+
 			default:
 				return null;
+
 		}
 	}
 }
@@ -200,21 +205,53 @@ abstract class Staff <T extends Comparable<T>> extends User<T> implements StaffI
 	@Override
 	public void addProductionSystem(Production p) {
 		IMDB.getInstance().productions.add(p);
+
+		contributions.add((T)p.title);
 	}
 
 	@Override
 	public void addActorSystem(Actor a) {
 		IMDB.getInstance().actors.add(a);
+
+		contributions.add((T)a.name);
+	}
+
+	public int getProductionIndex(String title) {
+		List<T> contributionsList = new ArrayList<>(contributions);
+
+		for (int i = 0; i < contributionsList.size(); i++) {
+			if (contributionsList.get(i).equals(title)) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	@Override
 	public void removeProductionSystem(String name) {
 		IMDB.getInstance().productions.remove(IMDB.getInstance().productions.indexOf(getProduction(name)));
+
+		contributions.remove(getProductionIndex(name));
+	}
+
+	public int getActorIndex(String name) {
+		List<T> contributionsList = new ArrayList<>(contributions);
+
+		for (int i = 0; i < contributionsList.size(); i++) {
+			if (contributionsList.get(i).equals(name)) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	@Override
 	public void removeActorSystem(String name) {
 		IMDB.getInstance().actors.remove(IMDB.getInstance().actors.indexOf(getActor(name)));
+
+		contributions.remove(getActorIndex(name));
 	}
 
 	@Override
