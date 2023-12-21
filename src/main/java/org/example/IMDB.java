@@ -1,6 +1,9 @@
 package org.example;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.json.simple.JSONArray;
@@ -162,7 +165,6 @@ public class IMDB {
 										   (Double)productionObject.get("averageRating"),
 										   releaseYear.intValue(), seasonsNr.intValue());
 
-
 					JSONArray directorsArray = (JSONArray)productionObject.get("directors");
 
 					for (Object o : directorsArray) {
@@ -297,7 +299,7 @@ public class IMDB {
 		} catch (FileNotFoundException e) {
 			
 			e.printStackTrace();
-			System.out.println("Could not find production.json");
+			System.out.println("Could not find actors.json");
 
 		} catch (ParseException e) {
 
@@ -333,13 +335,84 @@ public class IMDB {
 			JSONArray accountsArray = (JSONArray)parser.parse(reader);
 
 			for (Object obj : accountsArray) {
-				System.out.println(obj);
+
+				JSONObject accountObject = (JSONObject)obj;
+
+				AccountType type = AccountType.valueOf((String)accountObject.get("userType"));
+
+				JSONObject informationObject = (JSONObject)accountObject.get("information");
+
+				JSONObject credentialsObject = (JSONObject)informationObject.get("credentials");
+
+				JSONArray favoriteActorsArray = (JSONArray)accountObject.get("favoriteActors");
+
+				JSONArray favoriteProductionsArray = (JSONArray)accountObject.get("favoriteProductions");
+
+				SortedSet favorites = new TreeSet<>();
+
+				if (favoriteActorsArray != null) {
+					for (Object o : favoriteActorsArray) {
+						favorites.add((String)o);
+					}
+				}
+
+				if (favoriteProductionsArray != null) {
+					for (Object o : favoriteProductionsArray) {
+						favorites.add((String)o);
+					}
+				}
+
+				JSONArray productionsContributionArray = (JSONArray)accountObject.get("productionsContribution");
+
+				JSONArray actorsContributionArray = (JSONArray)accountObject.get("actorsContribution");
+
+				SortedSet contributions = new TreeSet<>();
+
+				if (productionsContributionArray != null) {
+					for (Object o : productionsContributionArray) {
+						contributions.add((String)o);
+					}
+				}
+
+				if (actorsContributionArray != null) {
+					for (Object o : actorsContributionArray) {
+						contributions.add((String)o);
+					}
+				}
+
+				JSONArray notificationsArray = (JSONArray)accountObject.get("notifications");
+				List<String> notifications = null;
+
+				if (notificationsArray != null) {
+					notifications = new LinkedList<>();
+
+					for (Object o : notificationsArray) {
+						notifications.add((String)o);
+					}
+				}
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+				User<?> newUser = UserFactory.createUser(type,
+									new User.Information.InformationBuilder(new Credentials((String)credentialsObject.get("email"),
+																							 (String)credentialsObject.get("password")),
+																		   (String)informationObject.get("name")).
+																		   country((String)informationObject.get("country")).
+																		   age((((Long)informationObject.get("age")).intValue())).
+																		   gender((String)informationObject.get("gender")).
+																		   birthDate(LocalDate.parse((String)informationObject.get("birthDate"), formatter)).
+																		   build(),
+																		   (String)accountObject.get("username"),
+																		   (String)accountObject.get("experience"),
+																		   favorites, contributions, notifications);
+
+				users.add(newUser);
 			}
 
 		} catch (FileNotFoundException e) {
 
 			e.printStackTrace();
-			System.out.println("Could not find production.json");
+			System.out.println("Could not find accounts.json");
 
 		} catch (ParseException e) {
 
@@ -353,9 +426,136 @@ public class IMDB {
 		}
 	}
 
+	public void displayAccounts() {
+
+		for (User<?> user : users) {
+			System.out.println(user);
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+		}
+	}
+
+	public int getUserIndex(String username) {
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).username.equals(username)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	public void addRequestToUser(String username, Request request) {
+		((Staff<?>)users.get(getUserIndex(username))).requests.add(request);
+	}
+
 	public void parseRequests() {
 
-		/* TODO */
+		JSONParser parser = new JSONParser();
+
+		FileReader reader = null;
+
+		try {
+
+			reader = new FileReader("../resources/input/requests.json");
+
+			JSONArray requestsArray = (JSONArray)parser.parse(reader);
+
+			for (Object obj : requestsArray) {
+
+				JSONObject requestObject = (JSONObject)obj;
+
+				RequestType type = RequestType.valueOf((String)requestObject.get("type"));
+
+				Request newRequest;
+
+				switch (type) {
+					case DELETE_ACCOUNT:
+
+						newRequest = new Request(type,
+												 LocalDateTime.parse((String)requestObject.get("createdDate")),
+												 (String)requestObject.get("description"),
+												 (String)requestObject.get("username"),
+												 (String)requestObject.get("to"));
+
+						requests.add(newRequest);
+
+						Admin.RequestHolder.addRequest(newRequest);
+
+						break;
+
+					case ACTOR_ISSUE:
+
+						newRequest = new Request(type,
+												 LocalDateTime.parse((String)requestObject.get("createdDate")),
+												 (String)requestObject.get("actorName"),
+												 (String)requestObject.get("description"),
+												 (String)requestObject.get("username"),
+												 (String)requestObject.get("to"));
+
+						requests.add(newRequest);
+
+						addRequestToUser(newRequest.solverUsername, newRequest);
+
+						break;
+
+					case MOVIE_ISSUE:
+
+						newRequest = new Request(type,
+												 LocalDateTime.parse((String)requestObject.get("createdDate")),
+												 (String)requestObject.get("movieTitle"),
+												 (String)requestObject.get("description"),
+												 (String)requestObject.get("username"),
+												 (String)requestObject.get("to"));
+
+						requests.add(newRequest);
+
+						addRequestToUser(newRequest.solverUsername, newRequest);
+
+						break;
+
+					case OTHERS:
+
+						newRequest = new Request(type,
+												 LocalDateTime.parse((String)requestObject.get("createdDate")),
+												 (String)requestObject.get("description"),
+												 (String)requestObject.get("username"),
+												 (String)requestObject.get("to"));
+
+						requests.add(newRequest);
+
+						Admin.RequestHolder.addRequest(newRequest);
+
+						break;
+					default:
+						break;
+				}
+			}
+
+		} catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+			System.out.println("Could not find requests.json");
+
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+			System.out.println("Could not parse json file");
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+	}
+
+	public void displayRequests() {
+
+		for (Request request : requests) {
+			System.out.println(request);
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+		}
 	}
 
 	public void run() {
@@ -363,7 +563,12 @@ public class IMDB {
 
 		parseProductions();
 
-		
+		parseAccounts();
+
+		parseRequests();
+
+		displayAccounts();
+
 	}
 
 	public static void main(String[] args) {

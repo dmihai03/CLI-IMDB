@@ -21,6 +21,23 @@ public class Request {
 	String creatorUsername;
 	String solverUsername;
 
+	public Request(RequestType requestType, LocalDateTime date, String description, String creatorUsername, String solverUsername) {
+		this.requestType = requestType;
+		this.date = date;
+		this.description = description;
+		this.creatorUsername = creatorUsername;
+		this.solverUsername = solverUsername;
+	}
+
+	public Request(RequestType requestType, LocalDateTime date, String name, String description, String creatorUsername, String solverUsername) {
+		this.requestType = requestType;
+		this.date = date;
+		this.name = name;
+		this.description = description;
+		this.creatorUsername = creatorUsername;
+		this.solverUsername = solverUsername;
+	}
+
 	public LocalDateTime getDate() {
 		return date;
 	}
@@ -35,6 +52,10 @@ public class Request {
 
 	public void setRequestType(RequestType requestType) {
 		this.requestType = requestType;
+	}
+
+	public String toString() {
+		return "Request type: " + requestType + "\nDate: " + date + "\nName: " + name + "\nDescription: " + description + "\nCreator username: " + creatorUsername + "\nSolver username: " + solverUsername + "\n";
 	}
 
 }
