@@ -21,6 +21,7 @@ public class Request {
 	String creatorUsername;
 	String solverUsername;
 
+	/* OTHERS and DELETE_ACCOUNT constructor */
 	public Request(RequestType requestType, LocalDateTime date, String description, String creatorUsername, String solverUsername) {
 		this.requestType = requestType;
 		this.date = date;
@@ -29,6 +30,7 @@ public class Request {
 		this.solverUsername = solverUsername;
 	}
 
+	/* ACTOR_ISSUE / PRODUCTION_ISSUE constructor */
 	public Request(RequestType requestType, LocalDateTime date, String name, String description, String creatorUsername, String solverUsername) {
 		this.requestType = requestType;
 		this.date = date;
@@ -55,7 +57,9 @@ public class Request {
 	}
 
 	public String toString() {
-		return "Request type: " + requestType + "\nDate: " + date + "\nName: " + name + "\nDescription: " + description + "\nCreator username: " + creatorUsername + "\nSolver username: " + solverUsername + "\n";
+		return	"Request type: " + requestType + "\nDate: " + date + "\nName: " + name +
+				"\nDescription: " + description + "\nCreator username: " + creatorUsername +
+				"\nSolver username: " + solverUsername + "\n";
 	}
 
 }

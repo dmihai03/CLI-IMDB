@@ -53,7 +53,6 @@ public abstract class Production implements Comparable<Production> {
 
 	/* verifies that a field is completed */
 	public boolean isFieldCompleted(Object o) {
-
 		return o != null;
 	}
 }
@@ -165,7 +164,7 @@ class Series extends Production {
 
 	@Override
 	public void displayInfo() {
-		
+
 		if (isFieldCompleted(title)) {
 			System.out.print("Title:\n\t" + title + "\n");
 		}
