@@ -281,8 +281,7 @@ public class Parser <T extends Comparable<T>> {
 						newRequest = new Request(type,
 												 LocalDateTime.parse((String)requestObject.get("createdDate")),
 												 (String)requestObject.get("description"),
-												 (String)requestObject.get("username"),
-												 (String)requestObject.get("to"));
+												 (String)requestObject.get("username"));
 
 						IMDB.getInstance().requests.add(newRequest);
 
@@ -325,8 +324,7 @@ public class Parser <T extends Comparable<T>> {
 						newRequest = new Request(type,
 												 LocalDateTime.parse((String)requestObject.get("createdDate")),
 												 (String)requestObject.get("description"),
-												 (String)requestObject.get("username"),
-												 (String)requestObject.get("to"));
+												 (String)requestObject.get("username"));
 
 						IMDB.getInstance().requests.add(newRequest);
 

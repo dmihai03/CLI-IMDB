@@ -24,7 +24,9 @@ class Credentials {
 	}
 }
 
-public abstract class User <T extends Comparable<T>> {
+public abstract class User <T extends Comparable<T>> implements Observer {
+
+	Subject subject;
 
 	Information info;
 	AccountType accountType;
@@ -100,21 +102,18 @@ public abstract class User <T extends Comparable<T>> {
 	}
 
 	public String toString() {
-		String buff = new String();
+		return	"Username: " + username + "\n" +
+				"Email: " + info.credentials.email + "\n" +
+				"Account type: " + accountType + "\n" +
+				"Experience: " + experience + "\n" +
+				"Name: " + info.name + "\n" +
+				"Country: " + info.country + "\n" +
+				"Age: " + info.age + "\n" +
+				"Gender: " + info.gender + "\n" +
+				"Birth date: " + info.birthDate + "\n" +
+				"Favourites: " + favourites + "\n" +
+				"Notifications: " + notifications + "\n";
 
-		buff = buff.concat("Username: " + username + "\n");
-		buff = buff.concat("Email :" + info.credentials.email + "\n");
-		buff = buff.concat("Account type: " + accountType + "\n");
-		buff = buff.concat("Experience: " + experience + "\n");
-		buff = buff.concat("Name: " + info.name + "\n");
-		buff = buff.concat("Country: " + info.country + "\n");
-		buff = buff.concat("Age: " + info.age + "\n");
-		buff = buff.concat("Gender " + info.gender + "\n");
-		buff = buff.concat("Birth date: " + info.birthDate + "\n");
-		buff = buff.concat("Favourites: " + favourites + "\n");
-		buff = buff.concat("Notifications: " + notifications + "\n");
-
-		return buff;
 	}
 }
 
@@ -154,12 +153,20 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 		if (r.solverUsername.equals("ADMIN")) {
 			Admin.RequestHolder.addRequest(r);
 
+			for (User<?> user : IMDB.getInstance().users) {
+				if (user.accountType.equals(AccountType.Admin)) {
+					user.update("You have a new request from " + r.creatorUsername);
+				}
+			}
+
 			return;
 		}
 
 		for (User<?> user : IMDB.getInstance().users) {
 			if (user.username.equals(r.solverUsername)) {
 				((Staff<?>)user).requests.add(r);
+
+				user.update("You have a new request from " + r.creatorUsername + "!");
 			}
 		}
 	}
@@ -171,20 +178,48 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 		if (r.solverUsername.equals("ADMIN")) {
 			Admin.RequestHolder.removeRequest(r);
 
+			for (User<?> user : IMDB.getInstance().users) {
+				if (user.accountType.equals(AccountType.Admin)) {
+					user.update(r.creatorUsername + " removed their request!");
+				}
+			}
+
 			return;
 		}
 
 		for (User<?> user: IMDB.getInstance().users) {
 			if (user.username.equals(r.solverUsername)) {
 				((Staff<?>)user).requests.remove(((Staff<?>)user).requests.indexOf(r));
+
+				user.update(r.creatorUsername + " removed their request!");
 			}
 		}
-
 	}
 
 	public void addReview(Integer grade, String comment, Production p) {
 		IMDB.getInstance().productions.get(IMDB.getInstance().
 		productions.indexOf(p)).ratings.add(new Rating(username, grade, comment));
+
+		for (Rating r : IMDB.getInstance().productions.get(IMDB.getInstance().productions.indexOf(p)).ratings) {
+			if (!r.username.equals(username)) {
+				IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.username)).
+				update(username + " added a review to a production that you rated: " + p.title + "!");
+			}
+		}
+
+		IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(p.title)).
+		update(username + " added a review to a production that you added: " + p.title + "!");
+
+	}
+
+	@Override
+	public void update(String message) {
+		notifications.add(message);
+	}
+
+	@Override
+	public void setSubject(Subject subject) {
+		this.subject = subject;
 	}
 
 }
@@ -232,7 +267,13 @@ abstract class Staff <T extends Comparable<T>> extends User<T> implements StaffI
 	public void removeProductionSystem(String name) {
 		IMDB.getInstance().productions.remove(IMDB.getInstance().productions.indexOf(getProduction(name)));
 
-		contributions.remove(getProductionIndex(name));
+		for (User<?> user : IMDB.getInstance().users) {
+			user.favourites.remove(getProduction(name));
+
+			if (user.accountType.equals(AccountType.Contributor) || user.accountType.equals(AccountType.Admin)) {
+				((Staff<?>)user).contributions.remove(getProductionIndex(name));
+			}
+		}
 	}
 
 	public int getActorIndex(String name) {
@@ -251,7 +292,13 @@ abstract class Staff <T extends Comparable<T>> extends User<T> implements StaffI
 	public void removeActorSystem(String name) {
 		IMDB.getInstance().actors.remove(IMDB.getInstance().actors.indexOf(getActor(name)));
 
-		contributions.remove(getActorIndex(name));
+		for (User<?> user : IMDB.getInstance().users) {
+			user.favourites.remove(getProduction(name));
+
+			if (user.accountType.equals(AccountType.Contributor) || user.accountType.equals(AccountType.Admin)) {
+				((Staff<?>)user).contributions.remove(getProductionIndex(name));
+			}
+		}
 	}
 
 	@Override
@@ -303,11 +350,61 @@ class Contributor <T extends Comparable<T>> extends Staff<T> implements Requests
 	@Override
 	public void createRequest(Request r) {
 		IMDB.getInstance().requests.add(r);
+
+		if (r.solverUsername.equals("ADMIN")) {
+			Admin.RequestHolder.addRequest(r);
+
+			for (User<?> user : IMDB.getInstance().users) {
+				if (user.accountType.equals(AccountType.Admin)) {
+					user.update("You have a new request from " + r.creatorUsername);
+				}
+			}
+
+			return;
+		}
+
+		for (User<?> user : IMDB.getInstance().users) {
+			if (user.username.equals(r.solverUsername)) {
+				((Staff<?>)user).requests.add(r);
+
+				user.update("You have a new request from " + r.creatorUsername + "!");
+			}
+		}
 	}
 
 	@Override
 	public void removeRequest(Request r) {
 		IMDB.getInstance().requests.remove(IMDB.getInstance().requests.indexOf(r));
+
+		if (r.solverUsername.equals("ADMIN")) {
+			Admin.RequestHolder.removeRequest(r);
+
+			for (User<?> user : IMDB.getInstance().users) {
+				if (user.accountType.equals(AccountType.Admin)) {
+					user.update(r.creatorUsername + " removed their request!");
+				}
+			}
+
+			return;
+		}
+
+		for (User<?> user: IMDB.getInstance().users) {
+			if (user.username.equals(r.solverUsername)) {
+				((Staff<?>)user).requests.remove(((Staff<?>)user).requests.indexOf(r));
+
+				user.update(r.creatorUsername + " removed their request!");
+			}
+		}
+	}
+
+	@Override
+	public void update(String message) {
+		notifications.add(message);
+	}
+
+	@Override
+	public void setSubject(Subject subject) {
+		this.subject = subject;
 	}
 	
 }
@@ -337,13 +434,22 @@ class Admin <T extends Comparable<T>> extends Staff<T>  {
 		}
 	}
 
-
 	public void addUserSystem(User<?> user) {
 		IMDB.getInstance().users.add(user);
 	}
 
 	public void deleteUserSystem(User<?> user) {
 		IMDB.getInstance().users.remove(IMDB.getInstance().users.indexOf(user));
+	}
+
+	@Override
+	public void update(String message) {
+		notifications.add(message);
+	}
+
+	@Override
+	public void setSubject(Subject subject) {
+		this.subject = subject;
 	}
 
 }

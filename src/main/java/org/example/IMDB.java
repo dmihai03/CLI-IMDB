@@ -69,6 +69,16 @@ public class IMDB {
 		return -1;
 	}
 
+	public int getUserOfContributionIndex(String contribution) {
+		for (int i = 0; i < users.size(); i++) {
+			if (((Staff<?>)users.get(i)).contributions.contains(contribution)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	public void addRequestToUser(String username, Request request) {
 		((Staff<?>)users.get(getUserIndex(username))).requests.add(request);
 	}
@@ -118,8 +128,6 @@ public class IMDB {
 		Parser.parseAccounts();
 
 		Parser.parseRequests();
-
-		displayAccounts();
 
 	}
 
