@@ -35,9 +35,18 @@ public class Rating implements Subject {
 	}
 
 	@Override
-	public void notifyObserver(String type) {
-		for (Observer observer : observers) {
-			observer.update(toString());
+	public void notifyObserver(NotifyType type) {
+		switch (type) {
+			case NewRating:
+
+				for (Observer observer : observers) {
+					observer.update("A production that you rated has received a new rating from: " + username);
+				}
+				
+				break;
+		
+			default:
+				break;
 		}
 	}
 

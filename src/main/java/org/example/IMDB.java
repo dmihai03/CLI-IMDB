@@ -47,6 +47,26 @@ public class IMDB {
 		return -1;
 	}
 
+	public int getProductionIndex(String title) {
+		for (int i = 0; i < productions.size(); i++) {
+			if (productions.get(i).title.equals(title)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	public boolean isProductionInList(String title) {
+		for (Production production : productions) {
+			if (production.title.equals(title)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public boolean isProductionInActorList(String title) {
 		for (Actor actor : actors) {
 			for (ProductionPair pair : actor.performances) {
@@ -71,8 +91,10 @@ public class IMDB {
 
 	public int getUserOfContributionIndex(String contribution) {
 		for (int i = 0; i < users.size(); i++) {
-			if (((Staff<?>)users.get(i)).contributions.contains(contribution)) {
-				return i;
+			if (users.get(i) instanceof Staff<?>) {
+				if (((Staff<?>)users.get(i)).contributions.contains(contribution)) {
+					return i;
+				}
 			}
 		}
 
@@ -120,6 +142,56 @@ public class IMDB {
 		}
 	}
 
+	public User<?> getUser(String email) {
+		for (User<?> user : users) {
+			if (user.info.getEmail().equals(email)) {
+				return user;
+			}
+		}
+
+		return null;
+	}
+
+	public boolean validateCredentials(String email, String password) {
+		User<?> user = getUser(email);
+
+		if (user == null) {
+			return false;
+		}
+
+		return user.info.checkPassword(password);
+	}
+
+	public void displayItemInfo(String name) {
+		if (isActorInList(name)) {
+			actors.get(getActorIndex(name)).displayInfo();
+		} else if (isProductionInList(name)) {
+			productions.get(getProductionIndex(name)).displayInfo();
+		} else {
+			System.out.println("No such item!");
+		}
+	}
+
+	public void removeReview(String username, String title) {
+		Production production = productions.get(getProductionIndex(title));
+
+		for (Rating review : production.ratings) {
+			if (review.username.equals(username)) {
+				production.ratings.remove(review);
+			}
+		}
+	}
+
+	public int getRequestIndex(String name) {
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).creatorUsername.equals(name)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	public void run() {
 		Parser.parseActors();
 
@@ -128,6 +200,8 @@ public class IMDB {
 		Parser.parseAccounts();
 
 		Parser.parseRequests();
+
+		Menu.welcomeMenu();
 
 	}
 

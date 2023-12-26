@@ -79,11 +79,32 @@ public class Request implements Subject {
 	}
 
 	@Override
-	public void notifyObserver(String type) {
-		if (type.equals("create")) {
-			for (Observer observer : observers) {
-				observer.update("You have a new request from: " + name);
-			}
+	public void notifyObserver(NotifyType type) {
+		switch (type) {
+
+			case CreateRequest:
+				for (Observer observer : observers) {
+					observer.update("You have a new request from: " + name);
+				}
+
+				break;
+
+			case RemoveRequest:
+				for (Observer observer : observers) {
+					observer.update(name + " has removed their request!");
+				}
+
+				break;
+
+			case RequestSolved:
+				for (Observer observer : observers) {
+					observer.update("Your request has been solved!");
+				}
+
+				break;
+
+			default:
+				break;
 		}
 	}
 

@@ -9,6 +9,13 @@ enum AccountType {
 	Admin
 }
 
+enum NotifyType {
+	CreateRequest,
+	RemoveRequest,
+	RequestSolved,
+	NewRating
+}
+
 class Credentials {
 
 	String email;
@@ -22,21 +29,23 @@ class Credentials {
 	public boolean checkPassword(String password) {
 		return password.equals(password);
 	}
+
 }
 
 public abstract class User <T extends Comparable<T>> implements Observer {
 
-	Subject subject;
+	List<Subject> subjects;
 
 	Information info;
 	AccountType accountType;
 	String username;
 	String experience;
-	List<String> notifications;
+	List<String> notifications = new LinkedList<>();
 	SortedSet<T> favourites;
 
 	public User(Information info, AccountType accountType, String username,
 				String experience, SortedSet<T> favourites, List<String> notifications) {
+		subjects = new LinkedList<>();
 		this.info = info;
 		this.accountType = accountType;
 		this.username = username;
@@ -99,6 +108,25 @@ public abstract class User <T extends Comparable<T>> implements Observer {
 				return new Information(this);
 			}
 		}
+
+		public String getEmail() {
+			return credentials.email;
+		}
+
+		public boolean checkPassword(String password) {
+			return credentials.checkPassword(password);
+		}
+
+	}
+
+	public void displayNotifications() {
+		if (notifications != null) {
+			for (String notification : notifications) {
+				System.out.println(notification);
+			}
+		} else {
+			System.out.println("You don't have notifications!");
+		}
 	}
 
 	public String toString() {
@@ -155,9 +183,11 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 
 			for (User<?> user : IMDB.getInstance().users) {
 				if (user.accountType.equals(AccountType.Admin)) {
-					user.update("You have a new request from " + r.creatorUsername);
+					user.setSubject(r);
 				}
 			}
+
+			r.notifyObserver(NotifyType.CreateRequest);
 
 			return;
 		}
@@ -166,9 +196,11 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 			if (user.username.equals(r.solverUsername)) {
 				((Staff<?>)user).requests.add(r);
 
-				user.update("You have a new request from " + r.creatorUsername + "!");
+				user.setSubject(r);
 			}
 		}
+
+		r.notifyObserver(NotifyType.CreateRequest);
 	}
 
 	@Override
@@ -180,9 +212,11 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 
 			for (User<?> user : IMDB.getInstance().users) {
 				if (user.accountType.equals(AccountType.Admin)) {
-					user.update(r.creatorUsername + " removed their request!");
+					user.setSubject(r);
 				}
 			}
+
+			r.notifyObserver(NotifyType.RemoveRequest);
 
 			return;
 		}
@@ -191,24 +225,28 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 			if (user.username.equals(r.solverUsername)) {
 				((Staff<?>)user).requests.remove(((Staff<?>)user).requests.indexOf(r));
 
-				user.update(r.creatorUsername + " removed their request!");
+				user.setSubject(r);
 			}
 		}
+
+		r.notifyObserver(NotifyType.RemoveRequest);
 	}
 
 	public void addReview(Integer grade, String comment, Production p) {
+		Rating newRating = new Rating(username, grade, comment);
+
 		IMDB.getInstance().productions.get(IMDB.getInstance().
-		productions.indexOf(p)).ratings.add(new Rating(username, grade, comment));
+		productions.indexOf(p)).ratings.add(newRating);
 
 		for (Rating r : IMDB.getInstance().productions.get(IMDB.getInstance().productions.indexOf(p)).ratings) {
 			if (!r.username.equals(username)) {
-				IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.username)).
-				update(username + " added a review to a production that you rated: " + p.title + "!");
+				IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.username)).setSubject(newRating);
 			}
 		}
 
-		IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(p.title)).
-		update(username + " added a review to a production that you added: " + p.title + "!");
+		IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(p.title)).setSubject(newRating);
+
+		newRating.notifyObserver(NotifyType.CreateRequest);		
 
 	}
 
@@ -219,7 +257,7 @@ class Regular <T extends Comparable<T>> extends User<T> implements RequestsManag
 
 	@Override
 	public void setSubject(Subject subject) {
-		this.subject = subject;
+		subjects.add(subject);
 	}
 
 }
@@ -356,9 +394,11 @@ class Contributor <T extends Comparable<T>> extends Staff<T> implements Requests
 
 			for (User<?> user : IMDB.getInstance().users) {
 				if (user.accountType.equals(AccountType.Admin)) {
-					user.update("You have a new request from " + r.creatorUsername);
+					user.setSubject(r);
 				}
 			}
+
+			r.notifyObserver(NotifyType.CreateRequest);
 
 			return;
 		}
@@ -367,9 +407,11 @@ class Contributor <T extends Comparable<T>> extends Staff<T> implements Requests
 			if (user.username.equals(r.solverUsername)) {
 				((Staff<?>)user).requests.add(r);
 
-				user.update("You have a new request from " + r.creatorUsername + "!");
+				user.setSubject(r);
 			}
 		}
+
+		r.notifyObserver(NotifyType.CreateRequest);
 	}
 
 	@Override
@@ -381,9 +423,11 @@ class Contributor <T extends Comparable<T>> extends Staff<T> implements Requests
 
 			for (User<?> user : IMDB.getInstance().users) {
 				if (user.accountType.equals(AccountType.Admin)) {
-					user.update(r.creatorUsername + " removed their request!");
+					user.setSubject(r);
 				}
 			}
+
+			r.notifyObserver(NotifyType.RemoveRequest);
 
 			return;
 		}
@@ -392,9 +436,11 @@ class Contributor <T extends Comparable<T>> extends Staff<T> implements Requests
 			if (user.username.equals(r.solverUsername)) {
 				((Staff<?>)user).requests.remove(((Staff<?>)user).requests.indexOf(r));
 
-				user.update(r.creatorUsername + " removed their request!");
+				user.setSubject(r);
 			}
 		}
+
+		r.notifyObserver(NotifyType.RemoveRequest);
 	}
 
 	@Override
@@ -404,7 +450,7 @@ class Contributor <T extends Comparable<T>> extends Staff<T> implements Requests
 
 	@Override
 	public void setSubject(Subject subject) {
-		this.subject = subject;
+		subjects.add(subject);
 	}
 	
 }
@@ -449,7 +495,7 @@ class Admin <T extends Comparable<T>> extends Staff<T>  {
 
 	@Override
 	public void setSubject(Subject subject) {
-		this.subject = subject;
+		subjects.add(subject);
 	}
 
 }
