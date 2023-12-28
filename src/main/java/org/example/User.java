@@ -376,6 +376,15 @@ abstract class Staff <T extends Comparable<T>> extends User<T> implements StaffI
 
 		return null;
 	}
+
+	public void displayRequests() {
+		for (int i = 0; i < requests.size(); i++) {
+			System.out.println("Request " + (i + 1) + ": ");
+			System.out.println(requests.get(i));
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+		}
+	}
 }
 
 class Contributor <T extends Comparable<T>> extends Staff<T> implements RequestsManager {

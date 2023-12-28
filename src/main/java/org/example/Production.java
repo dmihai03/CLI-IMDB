@@ -62,6 +62,18 @@ class Movie extends Production {
 	String duration;
 	Integer releaseYear;
 
+	public Movie(String title, String plot, Double avgRating, String duration, Integer releaseYear, List<String> directors, List<String> actors, List<Genre> genres) {
+		super(title, plot, avgRating);
+
+		this.duration = duration;
+		this.releaseYear = releaseYear;
+		this.directors = directors;
+		this.actors = actors;
+		this.genres = genres;
+
+		type = "Movie";
+	}
+
 	public Movie(String title, String plot, Double avgRating, String duration, Integer releaseYear) {
 		super(title, plot, avgRating);
 
@@ -151,6 +163,19 @@ class Series extends Production {
 	Integer releaseYear;
 	Integer seasonsNumber;
 	private Map<String, List<Episode>> seasons;
+
+	public Series(String title, String plot, Double avgRating, Integer releaseYear, Integer seasonsNumber, List<String> directors, List<String> actors, List<Production.Genre> genres) {
+		super(title, plot, avgRating);
+
+		this.releaseYear = releaseYear;
+		this.seasonsNumber = seasonsNumber;
+		this.directors = directors;
+		this.actors = actors;
+		this.genres = genres;
+		seasons = new TreeMap<>();
+
+		type = "Series";
+	}
 
 	public Series(String title, String plot, Double avgRating, Integer releaseYear, Integer seasonsNumber) {
 			super(title, plot, avgRating);

@@ -20,6 +20,12 @@ public class Actor {
 		this.biography = biography;
 	}
 
+	public Actor(String name, String biography, List<ProductionPair> performances) {
+
+		this(name, biography);
+		this.performances = performances;
+	}
+
 	public boolean isFieldCompleted(Object o) {
 
 		return o != null;
