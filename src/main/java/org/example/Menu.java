@@ -85,6 +85,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (IMDB.getInstance().isActorInList(actorName)) {
 									((SortedSet<String>)regularUser.favourites).add(actorName);
+
+									System.out.println("Actor " + actorName + " added to favourites!\n");
 								} else {
 									System.out.println("This actor does not exist in system!");
 								}
@@ -98,6 +100,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (IMDB.getInstance().isProductionInList(title)) {
 									((SortedSet<String>)regularUser.favourites).add(title);
+
+									System.out.println("Production " + title + " added to favourites!\n");
 								} else {
 									System.out.println("This movie/series does not exist in system!");
 								}
@@ -128,6 +132,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (regularUser.favourites.contains(actorName)) {
 									((SortedSet<String>)regularUser.favourites).remove(actorName);
+
+									System.out.println("Actor " + actorName + " removed from favourites!\n");
 								} else {
 									System.out.println("This actor does not exist in your favourites!");
 								}
@@ -141,6 +147,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (regularUser.favourites.contains(title)) {
 									((SortedSet<String>)regularUser.favourites).remove(title);
+
+									System.out.println("Production " + title + " removed from favourites!\n");
 								} else {
 									System.out.println("This movie/series does not exist in your favourites!");
 								}
@@ -191,7 +199,7 @@ public class Menu <T extends Comparable<T>>{
 
 							regularUser.createRequest(new Request(RequestType.OTHERS, date, description, regularUser.username));
 
-							return;
+							break;
 
 						case 2:
 							System.out.print("Enter description: ");
@@ -202,7 +210,7 @@ public class Menu <T extends Comparable<T>>{
 
 							regularUser.createRequest(new Request(RequestType.DELETE_ACCOUNT, date, description, regularUser.username));
 
-							return;
+							break;
 
 						case 3:
 							System.out.print("Enter actor name: ");
@@ -218,7 +226,7 @@ public class Menu <T extends Comparable<T>>{
 							regularUser.createRequest(new Request(RequestType.ACTOR_ISSUE, date, description, actorName, regularUser.username,
 													IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(actorName)).username));
 
-							return;
+							break;
 
 						case 4:
 							System.out.print("Enter actor name: ");
@@ -235,13 +243,21 @@ public class Menu <T extends Comparable<T>>{
 													IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(productionName)).username));
 
 
-							return;
+							break;
+
+						default:
+							break;
 					}
+
+					System.out.println("Request created!\n");
+
 				} else {
 					int requestIndex = IMDB.getInstance().getRequestIndex(regularUser.username);
 
 					if (requestIndex != -1) {
 						IMDB.getInstance().requests.remove(requestIndex);
+
+						System.out.println("Request removed!\n");
 					} else {
 						System.out.println("You have no requests!");
 					}
@@ -282,6 +298,9 @@ public class Menu <T extends Comparable<T>>{
 							xp += 1;
 
 							regularUser.experience = Integer.toString(xp);
+
+							System.out.println("Review added!\n");
+
 						} else {
 							System.out.println("This movie/series does not exist in system!");
 						}
@@ -296,6 +315,9 @@ public class Menu <T extends Comparable<T>>{
 						if (IMDB.getInstance().isProductionInList(title1)) {
 
 							IMDB.getInstance().removeReview(regularUser.username, title1);
+
+							System.out.println("Review deleted!\n");
+
 						} else {
 							System.out.println("This movie/series does not exist in system!");
 						}
@@ -366,13 +388,14 @@ public class Menu <T extends Comparable<T>>{
 		System.out.println("    7) Add/Delete actor/production to/from system");
 		System.out.println("    8) View/Solve requests");
 		System.out.println("    9) Update informations about actor/production");
-		System.out.println("   10) Log out");
+		System.out.println("   10) View favorites list");
+		System.out.println("   11) Log out");
 
 		Scanner scanner = new Scanner(System.in);
 
 		int option = Integer.parseInt(scanner.nextLine());
 
-		if (option < 1 || option > 10) {
+		if (option < 1 || option > 11) {
 			System.out.println("Invalid option! Try again!\n");
 
 			return;
@@ -430,6 +453,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (IMDB.getInstance().isActorInList(actorName)) {
 									((SortedSet<String>)contributorUser.favourites).add(actorName);
+
+									System.out.println("Actor " + actorName + " added to favourites!\n");
 								} else {
 									System.out.println("This actor does not exist in system!");
 								}
@@ -443,6 +468,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (IMDB.getInstance().isProductionInList(title)) {
 									((SortedSet<String>)contributorUser.favourites).add(title);
+
+									System.out.println("Production " + title + " added to favourites!\n");
 								} else {
 									System.out.println("This movie/series does not exist in system!");
 								}
@@ -473,6 +500,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (contributorUser.favourites.contains(actorName)) {
 									((SortedSet<String>)contributorUser.favourites).remove(actorName);
+
+									System.out.println("Actor " + actorName + " removed from favourites!\n");
 								} else {
 									System.out.println("This actor does not exist in your favourites!");
 								}
@@ -486,6 +515,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (contributorUser.favourites.contains(title)) {
 									((SortedSet<String>)contributorUser.favourites).remove(title);
+
+									System.out.println("Production " + title + " removed from favourites!\n");
 								} else {
 									System.out.println("This movie/series does not exist in your favourites!");
 								}
@@ -536,7 +567,7 @@ public class Menu <T extends Comparable<T>>{
 
 							contributorUser.createRequest(new Request(RequestType.OTHERS, date, description, contributorUser.username));
 
-							return;
+							break;
 
 						case 2:
 							System.out.print("Enter description: ");
@@ -547,7 +578,7 @@ public class Menu <T extends Comparable<T>>{
 
 							contributorUser.createRequest(new Request(RequestType.DELETE_ACCOUNT, date, description, contributorUser.username));
 
-							return;
+							break;
 
 						case 3:
 							System.out.print("Enter actor name: ");
@@ -563,7 +594,7 @@ public class Menu <T extends Comparable<T>>{
 							contributorUser.createRequest(new Request(RequestType.ACTOR_ISSUE, date, description, actorName, contributorUser.username,
 													IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(actorName)).username));
 
-							return;
+							break;
 
 						case 4:
 							System.out.print("Enter actor name: ");
@@ -580,13 +611,18 @@ public class Menu <T extends Comparable<T>>{
 													IMDB.getInstance().users.get(IMDB.getInstance().getUserOfContributionIndex(productionName)).username));
 
 
-							return;
+							break;
 					}
+
+					System.out.println("Request created!\n");
+
 				} else {
 					int requestIndex = IMDB.getInstance().getRequestIndex(contributorUser.username);
 
 					if (requestIndex != -1) {
 						IMDB.getInstance().requests.remove(requestIndex);
+
+						System.out.println("Request removed!\n");
 					} else {
 						System.out.println("You have no requests!");
 					}
@@ -629,6 +665,8 @@ public class Menu <T extends Comparable<T>>{
 
 								contributorUser.addActorSystem(new Actor(actorName, biography));
 
+								System.out.println("Actor " + actorName + " added to system!\n");
+
 								return;
 
 							case 2:
@@ -662,6 +700,8 @@ public class Menu <T extends Comparable<T>>{
 										Integer releaseYear = Integer.parseInt(scanner.nextLine());
 
 										contributorUser.addProductionSystem(new Movie(title, plot, null, duration, releaseYear));
+
+										System.out.println("Movie " + title + " added to system!\n");
 
 										return;
 
@@ -699,6 +739,10 @@ public class Menu <T extends Comparable<T>>{
 											newSeries.addSeason("Season " + i, episodes);
 										}
 
+										contributorUser.addProductionSystem(newSeries);
+
+										System.out.println("Series " + title + " added to system!\n");
+
 										return;
 
 									default:
@@ -721,8 +765,12 @@ public class Menu <T extends Comparable<T>>{
 						if (IMDB.getInstance().isProductionInList(name)) {
 
 							contributorUser.removeProductionSystem(name);
+
+							System.out.println("Production " + name + " removed from system!\n");
 						} else if (IMDB.getInstance().isActorInList(name)) {
 							contributorUser.removeActorSystem(name);
+
+							System.out.println("Actor " + name + " removed from system!\n");
 						} else {
 							System.out.println("This actor/production does not exist in system!");
 						}
@@ -863,6 +911,13 @@ public class Menu <T extends Comparable<T>>{
 									}
 
 									contributorUser.updateActor(new Actor(actorName, biography, performances));
+
+									IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+									Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
+									System.out.println("Request solved!\n");
+
+									contributorUser.requests.remove(r);
 
 								} else {
 									System.out.println("This actor does not exist in system!");
@@ -1077,10 +1132,26 @@ public class Menu <T extends Comparable<T>>{
 										Series s = (Series)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 										contributorUser.updateProduction(new Series(title, plot, s.avgRating, s.releaseYear, s.seasonsNumber, directors, actors, genres));
+
+										System.out.println("Request solved!\n");
+
+										contributorUser.requests.remove(r);
+
+										IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+										Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
 									} else if (IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title)).type.equals("Movie")) {
 										Movie m = (Movie)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 										contributorUser.updateProduction(new Movie(title, plot, m.avgRating, m.duration, m.releaseYear, directors, actors, genres));
+
+										System.out.println("Request solved!\n");
+
+										contributorUser.requests.remove(r);
+
+										IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+										Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
 									}
 								} else {
 									System.out.println("This production does not exist in system!");
@@ -1207,6 +1278,8 @@ public class Menu <T extends Comparable<T>>{
 							}
 
 							contributorUser.updateActor(new Actor(actorName, biography, performances));
+
+							System.out.println("Actor " + actorName + " updated!\n");
 
 						} else {
 							System.out.println("This actor does not exist in system!");
@@ -1422,10 +1495,14 @@ public class Menu <T extends Comparable<T>>{
 								Series s = (Series)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 								contributorUser.updateProduction(new Series(title, plot, s.avgRating, s.releaseYear, s.seasonsNumber, directors, actors, genres));
+
+								System.out.println("Series " + title + " updated!\n");
 							} else if (IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title)).type.equals("Movie")) {
 								Movie m = (Movie)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 								contributorUser.updateProduction(new Movie(title, plot, m.avgRating, m.duration, m.releaseYear, directors, actors, genres));
+
+								System.out.println("Movie " + title + " updated!\n");
 							}
 						} else {
 							System.out.println("This production does not exist in system!");
@@ -1438,6 +1515,18 @@ public class Menu <T extends Comparable<T>>{
 				return;
 
 			case 10:
+
+				if (contributorUser.favourites.size() == 0) {
+					System.out.println("You have no favourites!");
+
+					return;
+				}
+
+				System.out.println("Your favourites:\n\t" + contributorUser.favourites);
+
+				return;
+
+			case 11:
 				System.out.println("Log out or exit?\n    1)Log out\n    2)Exit");
 
 				option = Integer.parseInt(scanner.nextLine());
@@ -1482,7 +1571,8 @@ public class Menu <T extends Comparable<T>>{
 		System.out.println("    7) Add/Delete actor/production to/from system");
 		System.out.println("    8) View/Solve requests");
 		System.out.println("    9) Update informations about actor/production");
-		System.out.println("   10) Log out");
+		System.out.println("   10) View favourites list");
+		System.out.println("   11) Log out");
 
 		Scanner scanner = new Scanner(System.in);
 
@@ -1546,6 +1636,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (IMDB.getInstance().isActorInList(actorName)) {
 									((SortedSet<String>)adminUser.favourites).add(actorName);
+
+									System.out.println("Actor " + actorName + " added to favourites!\n");
 								} else {
 									System.out.println("This actor does not exist in system!");
 								}
@@ -1559,6 +1651,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (IMDB.getInstance().isProductionInList(title)) {
 									((SortedSet<String>)adminUser.favourites).add(title);
+
+									System.out.println("Production " + title + " added to favourites!\n");
 								} else {
 									System.out.println("This movie/series does not exist in system!");
 								}
@@ -1589,6 +1683,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (adminUser.favourites.contains(actorName)) {
 									((SortedSet<String>)adminUser.favourites).remove(actorName);
+
+									System.out.println("Actor " + actorName + " removed from favourites!\n");
 								} else {
 									System.out.println("This actor does not exist in your favourites!");
 								}
@@ -1602,6 +1698,8 @@ public class Menu <T extends Comparable<T>>{
 
 								if (adminUser.favourites.contains(title)) {
 									((SortedSet<String>)adminUser.favourites).remove(title);
+
+									System.out.println("Production " + title + " removed from favourites!\n");
 								} else {
 									System.out.println("This movie/series does not exist in your favourites!");
 								}
@@ -1797,6 +1895,8 @@ public class Menu <T extends Comparable<T>>{
 
 								adminUser.addActorSystem(new Actor(actorName, biography));
 
+								System.out.println("Actor " + actorName + " added to system!\n");
+
 								return;
 
 							case 2:
@@ -1830,6 +1930,8 @@ public class Menu <T extends Comparable<T>>{
 										Integer releaseYear = Integer.parseInt(scanner.nextLine());
 
 										adminUser.addProductionSystem(new Movie(title, plot, null, duration, releaseYear));
+
+										System.out.println("Movie " + title + " added to system!\n");
 
 										return;
 
@@ -1867,6 +1969,10 @@ public class Menu <T extends Comparable<T>>{
 											newSeries.addSeason("Season " + i, episodes);
 										}
 
+										adminUser.addProductionSystem(newSeries);
+
+										System.out.println("Series " + title + " added to system!\n");
+
 										return;
 
 									default:
@@ -1889,8 +1995,12 @@ public class Menu <T extends Comparable<T>>{
 						if (IMDB.getInstance().isProductionInList(name)) {
 
 							adminUser.removeProductionSystem(name);
+
+							System.out.println("Production " + name + " deleted from system!\n");
 						} else if (IMDB.getInstance().isActorInList(name)) {
 							adminUser.removeActorSystem(name);
+
+							System.out.println("Actor " + name + " deleted from system!\n");
 						} else {
 							System.out.println("This actor/production does not exist in system!");
 						}
@@ -2031,6 +2141,12 @@ public class Menu <T extends Comparable<T>>{
 									}
 
 									adminUser.updateActor(new Actor(actorName, biography, performances));
+
+									System.out.println("Request solved!\n");
+
+									IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+									Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
 
 								} else {
 									System.out.println("This actor does not exist in system!");
@@ -2245,10 +2361,26 @@ public class Menu <T extends Comparable<T>>{
 										Series s = (Series)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 										adminUser.updateProduction(new Series(title, plot, s.avgRating, s.releaseYear, s.seasonsNumber, directors, actors, genres));
+
+										System.out.println("Request solved!\n");
+
+										adminUser.requests.remove(r);
+
+										IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+										Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
 									} else if (IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title)).type.equals("Movie")) {
 										Movie m = (Movie)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 										adminUser.updateProduction(new Movie(title, plot, m.avgRating, m.duration, m.releaseYear, directors, actors, genres));
+
+										System.out.println("Request solved!\n");
+
+										adminUser.requests.remove(r);
+
+										IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+										Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
 									}
 								} else {
 									System.out.println("This production does not exist in system!");
@@ -2259,7 +2391,35 @@ public class Menu <T extends Comparable<T>>{
 
 						case 2:
 
-							/* TODO: add others/delete_account solve */
+							System.out.println("Enter request index: ");
+
+							requestIndex = Integer.parseInt(scanner.nextLine());
+
+							while (requestIndex < 1 || requestIndex > Admin.RequestHolder.requests.size()) {
+								System.out.println("Invalid index! Try again!");
+								requestIndex = Integer.parseInt(scanner.nextLine());
+							}
+
+							r = Admin.RequestHolder.requests.get(requestIndex - 1);
+
+							if (r.getRequestType().equals(RequestType.DELETE_ACCOUNT)) {
+								adminUser.deleteUserSystem(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)));
+
+								Admin.RequestHolder.requests.remove(r);
+
+								System.out.println("Request solved!\n");
+							} else if (r.getRequestType().equals(RequestType.OTHERS)) {
+								System.out.println(r);
+
+								Admin.RequestHolder.requests.remove(r);
+
+								System.out.println("Request will be solved!\n");
+
+								IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience =
+								Integer.toString(Integer.parseInt(IMDB.getInstance().users.get(IMDB.getInstance().getUserIndex(r.creatorUsername)).experience) + 1);
+
+							}
+
 							break;
 
 						default:
@@ -2377,6 +2537,8 @@ public class Menu <T extends Comparable<T>>{
 							}
 
 							adminUser.updateActor(new Actor(actorName, biography, performances));
+
+							System.out.println("Actor " + actorName + " updated!\n");
 
 						} else {
 							System.out.println("This actor does not exist in system!");
@@ -2592,10 +2754,14 @@ public class Menu <T extends Comparable<T>>{
 								Series s = (Series)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 								adminUser.updateProduction(new Series(title, plot, s.avgRating, s.releaseYear, s.seasonsNumber, directors, actors, genres));
+
+								System.out.println("Series " + title + " updated!\n");
 							} else if (IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title)).type.equals("Movie")) {
 								Movie m = (Movie)IMDB.getInstance().productions.get(IMDB.getInstance().getProductionIndex(title));
 
 								adminUser.updateProduction(new Movie(title, plot, m.avgRating, m.duration, m.releaseYear, directors, actors, genres));
+
+								System.out.println("Movie " + title + " updated!\n");
 							}
 						} else {
 							System.out.println("This production does not exist in system!");
@@ -2608,6 +2774,18 @@ public class Menu <T extends Comparable<T>>{
 				return;
 
 			case 10:
+
+				if (adminUser.favourites.size() == 0) {
+					System.out.println("You have no favourites!");
+
+					return;
+				}
+
+				System.out.println("Your favourites:\n\t" + adminUser.favourites);
+
+				return;
+
+			case 11:
 				System.out.println("Log out or exit?\n    1)Log out\n    2)Exit");
 
 				option = Integer.parseInt(scanner.nextLine());
