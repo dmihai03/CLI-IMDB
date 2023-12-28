@@ -507,4 +507,20 @@ class Admin <T extends Comparable<T>> extends Staff<T>  {
 		subjects.add(subject);
 	}
 
+	public void displayRequests() {
+		for (int i = 0; i < RequestHolder.requests.size(); i++) {
+			System.out.println("Request for admins" + (i + 1) + ": ");
+			System.out.println(RequestHolder.requests.get(i));
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+		}
+
+		for (int i = 0; i < requests.size(); i++) {
+			System.out.println("Request " + (i + 1) + ": ");
+			System.out.println(requests.get(i));
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+		}
+	}
+
 }

@@ -48,3 +48,4 @@ README.md
 .idea
 test
 *.out
+*.class
