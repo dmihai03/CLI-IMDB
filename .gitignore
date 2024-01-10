@@ -44,7 +44,6 @@ bin/
 ### Their files ###
 
 *gradle*
-README.md
 .idea
 test
 *.out
