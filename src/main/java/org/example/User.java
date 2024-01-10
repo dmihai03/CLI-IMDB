@@ -27,7 +27,7 @@ class Credentials {
 	}
 
 	public boolean checkPassword(String password) {
-		return password.equals(password);
+		return this.password.equals(password);
 	}
 
 }
@@ -139,7 +139,7 @@ public abstract class User <T extends Comparable<T>> implements Observer {
 				"Age: " + info.age + "\n" +
 				"Gender: " + info.gender + "\n" +
 				"Birth date: " + info.birthDate + "\n" +
-				"Favourites: " + favourites + "\n" +
+				"favourites: " + favourites + "\n" +
 				"Notifications: " + notifications + "\n";
 
 	}

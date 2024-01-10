@@ -105,14 +105,56 @@ public class IMDB {
 		((Staff<?>)users.get(getUserIndex(username))).requests.add(request);
 	}
 
-	public void displayProductions() {
+	public void displayAllProductions() {
 
 		for (Production prod : productions) {
 			prod.displayInfo();
 			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
 			System.out.println("----------------------------------------------------------------------------------------------------------------------------");
 		}
+	}
 
+	public void displayProductions() {
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.print("Enter the genre (Action, Adventure, Comedy, Drama, Horror, SF, Cooking, Fantasy, Romance, Mystery, Thriller, Crime, Biography, War): ");
+		boolean isInvalidGenre = true;
+		Production.Genre genre = null;
+
+		while (isInvalidGenre) {
+			try {
+				genre = Production.Genre.valueOf(scanner.nextLine());
+				isInvalidGenre = false;
+			} catch (IllegalArgumentException e) {
+				System.out.println("Invalid genre! Please type again!");
+				isInvalidGenre = true;
+			}
+		}
+
+		System.out.print("Enter the minimum rating: ");
+
+		double rating = scanner.nextDouble();
+
+		while (rating < 0 || rating > 10) {
+			System.out.println("Invalid rating!");
+			System.out.print("Enter the minimum rating: ");
+			rating = scanner.nextDouble();
+		}
+
+		int count = 0;
+
+		for (Production p : productions) {
+			if (p.genres.contains(genre) && p.avgRating >= rating) {
+				count++;
+				p.displayInfo();
+				System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+				System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+			}
+		}
+
+		if (count == 0) {
+			System.out.println("No productions with this filters found!");
+		}
 	}
 
 	public void displayActors() {
